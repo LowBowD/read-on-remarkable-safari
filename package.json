@@ -1,0 +1,19 @@
+{
+  "name": "read-on-remarkable-safari",
+  "version": "1.0.0",
+  "description": "Safari extension to send articles to reMarkable as EPUB or PDF",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/build.test.mjs"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "jspdf": "^4.2.1",
+    "jszip": "^3.10.1",
+    "rmapi-js": "^14.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

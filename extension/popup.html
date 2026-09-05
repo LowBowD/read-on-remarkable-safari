@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Read on reMarkable</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #6b6b6b; --line: #e5e5e5;
+    --accent: #111111; --accent-fg: #ffffff; --ok: #1f7a3d; --err: #b3261e;
+    --field: #f6f6f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1e; --fg: #f2f2f2; --muted: #9a9a9e; --line: #38383a;
+      --accent: #f2f2f2; --accent-fg: #1c1c1e; --ok: #4ccb74; --err: #ff6b61;
+      --field: #2a2a2c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    width: 320px; margin: 0; padding: 16px;
+    font: 13px/1.45 -apple-system, "SF Pro Text", Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--fg);
+  }
+  h1 { font-size: 15px; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
+  h1 .logo { width: 18px; height: 18px; display:inline-block; }
+  .sub { color: var(--muted); font-size: 11.5px; margin: 0 0 14px; }
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.on { background: var(--ok); }
+  .dot.off { background: var(--err); }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  input[type=text] {
+    width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--field); color: var(--fg); font-size: 14px; letter-spacing: 2px;
+    text-transform: lowercase; margin-bottom: 10px;
+  }
+  button {
+    width: 100%; padding: 10px; border: 0; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; background: var(--accent); color: var(--accent-fg);
+  }
+  button.secondary { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 500; margin-top: 8px; }
+  button:disabled { opacity: 0.55; cursor: default; }
+  a { color: inherit; }
+  .fmt { display: flex; gap: 8px; margin-bottom: 12px; }
+  .fmt label {
+    flex: 1; margin: 0; text-align: center; padding: 8px 4px; border: 1px solid var(--line);
+    border-radius: 8px; cursor: pointer; color: var(--fg); font-size: 12.5px; font-weight: 600;
+    background: var(--field);
+  }
+  .fmt input { position: absolute; opacity: 0; pointer-events: none; }
+  .fmt label.active { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+  .fmt small { display:block; font-weight:400; color: var(--muted); font-size: 10.5px; margin-top:2px; }
+  .fmt label.active small { color: var(--accent-fg); opacity: 0.8; }
+  .msg { font-size: 12px; margin-top: 12px; min-height: 16px; }
+  .msg.ok { color: var(--ok); }
+  .msg.err { color: var(--err); }
+  .hint { font-size: 11px; color: var(--muted); margin: 8px 0 0; }
+  .hidden { display: none; }
+  .spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--muted); border-top-color: transparent; border-radius:50%; animation: spin .7s linear infinite; vertical-align:-2px; margin-right:6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <h1><span class="logo">📖</span> Read on reMarkable</h1>
+  <p class="sub">Send the current article to your reMarkable.</p>
+
+  <!-- Connected view -->
+  <section id="main" class="hidden">
+    <div class="status"><span class="dot on"></span> Connected to reMarkable</div>
+    <label>Format</label>
+    <div class="fmt" id="fmt">
+      <label data-fmt="epub"><input type="radio" name="fmt" value="epub"/>EPUB<small>reflowable</small></label>
+      <label data-fmt="pdf"><input type="radio" name="fmt" value="pdf"/>PDF<small>fixed layout</small></label>
+    </div>
+    <button id="send">Send this page</button>
+    <button id="disconnect" class="secondary">Disconnect</button>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <!-- Pairing view -->
+  <section id="pair" class="hidden">
+    <div class="status"><span class="dot off"></span> Not connected</div>
+    <p class="hint">1. Open <a id="connectLink" href="https://my.remarkable.com/device/browser/connect" target="_blank">my.remarkable.com</a> and sign in to get a one-time code.</p>
+    <label for="code">2. Enter the 8-character code</label>
+    <input type="text" id="code" maxlength="8" autocomplete="off" spellcheck="false" placeholder="abcdefgh"/>
+    <button id="connect">Connect</button>
+    <div class="msg" id="pairMsg"></div>
+  </section>
+
+  <script src="popup.js"></script>
+</body>
+</html>
